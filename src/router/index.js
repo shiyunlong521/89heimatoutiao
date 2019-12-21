@@ -11,12 +11,12 @@ var routes = [
   },
   {
     // home主页
-    path: 'home/',
+    path: '/home',
     name: 'home',
     component: Home
   }, {
     // 登录页
-    path: './login',
+    path: '/login',
     component: Login
   }
 ]
