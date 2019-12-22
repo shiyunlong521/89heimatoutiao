@@ -6,7 +6,7 @@
                 <img src="../../assets/img/logo_index.png" alt="">
             </div>
             <!-- 登录表单 设置表单容器 el-form需要绑定model属性绑定验证规则对象 -->
-            <el-form style="margin-top:30px" :model="login" :rules="loginRules">
+            <el-form ref="myForm" style="margin-top:30px" :model="loginForm" :rules="loginRules">
                 <!-- 表单域el-form-item=>一般表单域里面代表 =>校眼=>prop=>要校验的字段名-->
                 <el-form-item prop="mobile">
                     <!-- 具体组件 登录手机号 v-model 双向绑定数据对象-->
@@ -24,7 +24,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" style="width:100%">登录</el-button>
+                    <!-- 注册一个点击事件 -->
+                    <el-button @click="submitLogin" type="primary" style="width:100%">登录</el-button>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+
 export default {
   // 第一部 在data中定义表单数据对象
   data () {
@@ -43,8 +45,40 @@ export default {
         check: false // 是否勾选
       },
       loginRules: {
-        //   验证规则 验证表单登录的
+        //   验证规则 验证表单登录的 key(字段名):value(数组)
+        // required true, ->必填
+        mobile: [{ required: true, message: '请输入您的手机号' }, {
+          pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'
+        }],
+        code: [{ required: true, message: '请输入您的手机验证码' }, {
+          pattern: /^\d{6}$/,
+          message: '验证码格式不正确'
+        }],
+        // 自定义函数
+        check: [{ validator: function (rule, value, callback) {
+          // rule当前的规则 没什么用
+          // value指的是我们要校验的字段值
+          if (value) {
+            // 认为校验通过 就放过去
+            callback() // 直接执行callback 认为通过
+          } else {
+            // 认为校验不通过 要提示信息
+            callback(new Error('您必须无条件同意'))
+          }
+        } }]
       }
+    }
+  },
+  methods: {
+    // 提交登录表
+    submitLogin () {
+      // 获取 el-form实力
+      this.$refs.myForm.validate(function (isOk) {
+        if (isOk) {
+          // 认为前端校验成功
+          console.log('前端校验成功,发送用户名和密码到后台校验')
+        }
+      })
     }
   }
 }
