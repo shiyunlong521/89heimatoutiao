@@ -73,10 +73,27 @@ export default {
     // 提交登录表
     submitLogin () {
       // 获取 el-form实力
-      this.$refs.myForm.validate(function (isOk) {
+      this.$refs.myForm.validate((isOk) => {
         if (isOk) {
           // 认为前端校验成功
-          console.log('前端校验成功,发送用户名和密码到后台校验')
+          // 地址参数 查询参数 params 对象
+          // body参数 data对象
+
+          this.$axios({
+            url: '/authorizations', // 请求地址
+            method: 'post',
+            data: this.loginForm
+          }).then(result => {
+            window.localStorage.setItem('user-token', result.data.data.toke)// 前端缓存令牌
+            this.$router.push('/')// 加上home也行
+            // 成功后才会引入到shen
+          }).catch(() => {
+            // elementUI的方法
+            this.$message({
+              message: '您的手机号或者验证码不正确',
+              type: 'warning'
+            })
+          })
         }
       })
     }
